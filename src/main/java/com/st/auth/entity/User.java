@@ -32,6 +32,8 @@ public class User {
     @Column(nullable = false)
     private LocalDate date;
 
+    public User(){}
+
     public User(String name, String gender, String email, @Nullable String password, String role) {
         this.name = name;
         this.gender = gender;
