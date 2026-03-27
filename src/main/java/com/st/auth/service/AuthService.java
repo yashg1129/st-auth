@@ -4,8 +4,10 @@ import com.st.auth.dto.AuthResponse;
 import com.st.auth.dto.RegisterRequest;
 import com.st.auth.entity.User;
 import com.st.auth.repository.UserRepository;
+import com.st.auth.util.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,19 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final SkillsTuteUserDetailsService customUserDetailsService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager) {
+                       AuthenticationManager authenticationManager,
+                       JwtService jwtService,
+                       SkillsTuteUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -44,10 +52,12 @@ public class AuthService {
         );
 
         user.setDate(LocalDate.now());
-
         userRepository.save(user);
 
-        return new AuthResponse("User registered successfully", user.getName(), user.getRole());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getName());
+        String token = jwtService.generateToken(userDetails);
+
+        return new AuthResponse(token, user.getName(), user.getRole(), "User registered successfully");
     }
 
     public AuthResponse login(String username, String password) {
@@ -58,6 +68,9 @@ public class AuthService {
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return new AuthResponse("Login successful", user.getName(), user.getRole());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        String token = jwtService.generateToken(userDetails);
+
+        return new AuthResponse(token, user.getName(), user.getRole(), "Login successful");
     }
 }
