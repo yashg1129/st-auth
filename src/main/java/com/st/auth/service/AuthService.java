@@ -3,6 +3,8 @@ package com.st.auth.service;
 import com.st.auth.dto.AuthResponse;
 import com.st.auth.dto.RegisterRequest;
 import com.st.auth.entity.User;
+import com.st.auth.exception.DuplicateResourceException;
+import com.st.auth.exception.InvalidCredentialsException;
 import com.st.auth.repository.UserRepository;
 import com.st.auth.util.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,12 +37,9 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByName(request.getName())) {
-            throw new RuntimeException("Username already exists");
-        }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new DuplicateResourceException("Email already exists");
         }
 
         User user = new User(
@@ -54,22 +53,27 @@ public class AuthService {
         user.setDate(LocalDate.now());
         userRepository.save(user);
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getName());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
 
         return new AuthResponse(token, user.getName(), user.getRole(), "User registered successfully");
     }
 
-    public AuthResponse login(String username, String password) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
+    public AuthResponse login(String email, String password) {
 
-        User user = userRepository.findByName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+        } catch (Exception ex) {
+            throw new InvalidCredentialsException("Invalid user or password");
+        }
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
         String token = jwtService.generateToken(userDetails);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         return new AuthResponse(token, user.getName(), user.getRole(), "Login successful");
     }

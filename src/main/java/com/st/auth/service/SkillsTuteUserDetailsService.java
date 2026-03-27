@@ -20,8 +20,8 @@ public class SkillsTuteUserDetailsService implements UserDetailsService {
         }
 
         @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            User user = userRepository.findByName(username)
+        public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             return new org.springframework.security.core.userdetails.User(
