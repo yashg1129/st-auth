@@ -56,7 +56,7 @@ public class AuthService {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
 
-        return new AuthResponse(token, user.getName(), user.getRole(), "User registered successfully");
+        return new AuthResponse(token, user.getEmail(), user.getRole(), "User registered successfully");
     }
 
     public AuthResponse login(String email, String password) {
@@ -75,6 +75,6 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return new AuthResponse(token, user.getName(), user.getRole(), "Login successful");
+        return new AuthResponse(token, user.getEmail(), user.getRole(), "Login successful");
     }
 }
