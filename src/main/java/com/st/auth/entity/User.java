@@ -1,5 +1,6 @@
 package com.st.auth.entity;
 
+import com.st.auth.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.jspecify.annotations.Nullable;
@@ -25,7 +26,9 @@ public class User {
     @Column(nullable = false)
     private String gender;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     private Integer experience;
 
@@ -34,7 +37,7 @@ public class User {
 
     public User(){}
 
-    public User(String name, String gender, String email, @Nullable String password, String role) {
+    public User(String name, String gender, String email, @Nullable String password, Role role) {
         this.name = name;
         this.gender = gender;
         this.email = email;
@@ -90,11 +93,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

@@ -3,6 +3,7 @@ package com.st.auth.service;
 import com.st.auth.dto.AuthResponse;
 import com.st.auth.dto.RegisterRequest;
 import com.st.auth.entity.User;
+import com.st.auth.enums.Role;
 import com.st.auth.exception.DuplicateResourceException;
 import com.st.auth.exception.InvalidCredentialsException;
 import com.st.auth.repository.UserRepository;
@@ -22,13 +23,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final SkillsTuteUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
                        JwtService jwtService,
-                       SkillsTuteUserDetailsService customUserDetailsService) {
+                       CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -47,7 +48,7 @@ public class AuthService {
                 request.getGender(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                "ROLE_USER"
+                Role.ROLE_USER
         );
 
         user.setDate(LocalDate.now());
@@ -56,11 +57,10 @@ public class AuthService {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtService.generateToken(userDetails);
 
-        return new AuthResponse(token, user.getEmail(), user.getRole(), "User registered successfully");
+        return new AuthResponse(token, user.getEmail(), user.getRole().name(), "User registered successfully");
     }
 
     public AuthResponse login(String email, String password) {
-
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
@@ -75,6 +75,6 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return new AuthResponse(token, user.getEmail(), user.getRole(), "Login successful");
+        return new AuthResponse(token, user.getEmail(), user.getRole().name(), "Login successful");
     }
 }
