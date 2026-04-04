@@ -48,14 +48,14 @@ public class AuthService {
                 request.getGender(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                Role.ROLE_USER
+                Role.USER
         );
 
         user.setDate(LocalDate.now());
         userRepository.save(user);
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
-        String token = jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(user, userDetails);
 
         return new AuthResponse(token, user.getEmail(), user.getRole().name(), "User registered successfully");
     }
@@ -68,13 +68,10 @@ public class AuthService {
         } catch (Exception ex) {
             throw new InvalidCredentialsException("Invalid user or password");
         }
-
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-        String token = jwtService.generateToken(userDetails);
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
+        String token = jwtService.generateToken(user, userDetails);
         return new AuthResponse(token, user.getEmail(), user.getRole().name(), "Login successful");
     }
 }
