@@ -9,7 +9,12 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+    indexes = {
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_mobile", columnList = "mobile")
+    }
+)
 public class User {
 
     @Id
@@ -20,6 +25,8 @@ public class User {
     private String name;
     @Column(nullable = false, unique = true)
     private String email;
+    @Column(unique = true)
+    private String mobile;
     @Column(nullable = false)
     private String password;
     private String address;
