@@ -37,11 +37,11 @@ public class User {
 
     private String gender;
 
+    private Integer experience;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    private Integer experience;
 
     @Column(nullable = false)
     private LocalDate date;
