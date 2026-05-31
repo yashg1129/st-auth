@@ -1,6 +1,8 @@
 package com.st.auth.entity;
 
-public class EmailDto {
+import com.st.auth.enums.EmailType;
+
+public class EmailRequest {
 
     private String name;
     private String email;
@@ -8,6 +10,24 @@ public class EmailDto {
     private String to;
     private String subject;
     private String body;
+    private EmailType type;
+    private String otp;
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public EmailType getType() {
+        return type;
+    }
+
+    public void setType(EmailType type) {
+        this.type = type;
+    }
 
     public String getEmail() {
         return email;

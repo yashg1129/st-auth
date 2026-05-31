@@ -23,14 +23,18 @@ public class User {
 
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false, unique = true)
     private String email;
+
     @Column(unique = true)
     private String mobile;
+
     @Column(nullable = false)
     private String password;
+
     private String address;
-    @Column(nullable = false)
+
     private String gender;
 
     @Enumerated(EnumType.STRING)

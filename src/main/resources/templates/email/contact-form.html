@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Enquiry / Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        .header {
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 6px 6px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .label {
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            margin-bottom: 12px;
+            color: #555;
+        }
+        .footer {
+            font-size: 12px;
+            text-align: center;
+            color: #999;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>📩 New Feedback / Enquiry</h2>
+    </div>
+
+    <div class="content">
+        <p><span class="label">Name:</span> <span class="value" th:text="${name}">John Doe</span></p>
+
+        <p><span class="label">Email:</span> <span class="value" th:text="${email}">john@example.com</span></p>
+
+        <p><span class="label">Subject:</span> <span class="value" th:text="${subject}">General Query</span></p>
+
+        <p><span class="label">Message:</span></p>
+        <p class="value" th:text="${message}">
+            This is a sample enquiry message...
+        </p>
+
+        <!-- Optional CTA -->
+        <a th:href="'mailto:' + ${email}" class="btn">Reply to User</a>
+    </div>
+
+    <div class="footer">
+        <p>This email was generated from SkillsTute Contact Form</p>
+    </div>
+</div>
+
+</body>
+</html>
