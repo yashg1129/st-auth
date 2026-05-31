@@ -1,4 +1,4 @@
-package com.st.auth.util;
+package com.st.auth.utils;
 
 import java.security.SecureRandom;
 

@@ -1,6 +1,6 @@
 package com.st.auth.config;
 
-import com.st.auth.util.JwtService;
+import com.st.auth.utils.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +18,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    public static final String BEARER = "Bearer ";
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -33,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(BEARER)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,11 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
+            Integer userId = jwtService.extractUserId(token);
+            AuthenticatedUser principal = new AuthenticatedUser(userId, username);
             if (jwtService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,
+                                principal,
                                 null,
                                 userDetails.getAuthorities()
                         );

@@ -7,7 +7,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "users",
     indexes = {
@@ -80,6 +79,14 @@ public class User {
         this.email = email;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -104,20 +111,20 @@ public class User {
         this.gender = gender;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public Integer getExperience() {
         return experience;
     }
 
     public void setExperience(Integer experience) {
         this.experience = experience;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public LocalDate getDate() {

@@ -8,8 +8,8 @@ import com.st.auth.exception.DuplicateResourceException;
 import com.st.auth.exception.InvalidCredentialsException;
 import com.st.auth.exception.InvalidOtpException;
 import com.st.auth.repository.UserRepository;
-import com.st.auth.util.JwtService;
-import com.st.auth.util.RandomPasswordGenerator;
+import com.st.auth.utils.JwtService;
+import com.st.auth.utils.RandomPasswordGenerator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -85,7 +85,6 @@ public class AuthService {
         if(!otpService.verifyOtp(email, otp)) {
             throw new InvalidOtpException("Invalid OTP");
         }
-        //UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
         User user = userRepository.findByEmail(email).orElse(null);
         if(user == null) {
             User newUser = new User();

@@ -1,4 +1,4 @@
-package com.st.auth.util;
+package com.st.auth.utils;
 
 import com.st.auth.enums.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

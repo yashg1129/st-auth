@@ -1,4 +1,4 @@
-package com.st.auth.util;
+package com.st.auth.utils;
 
 import com.st.auth.entity.User;
 import io.jsonwebtoken.Claims;
@@ -75,6 +75,10 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Integer extractUserId(String token) {
+        return extractAllClaims(token).get("userId", Integer.class);
     }
 
     private SecretKey getSignInKey() {
